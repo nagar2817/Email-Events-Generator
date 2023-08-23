@@ -1,0 +1,17 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60 # Total duration of the test in seconds
+      arrivalRate: 5  # Number of virtual users per second
+
+scenarios:
+  - flow:
+      - loop:
+          - post:
+              url: '/events'
+              json:
+                event: "{{ __VU }}-{{ __ITER }}"
+                type: 'open-email'
+                # Add other event data here as needed
+            count: 10  # 10 requests per second per user
+          # - think: 100  # 100 milliseconds delay between requests
