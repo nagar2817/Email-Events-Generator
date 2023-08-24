@@ -1,1 +1,1 @@
-## Open Eamil Event Listener!!
+## Open Email Event Listener!!
