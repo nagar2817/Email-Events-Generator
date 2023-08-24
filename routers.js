@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const eventStore = new Map();
 const emailEvents = require('./data.js');
-// const sseExpress = require("sse-express");
 
 // Endpoint to receive real-time analytics events
 router.post('/events', (req, res) => {
@@ -11,14 +10,11 @@ router.post('/events', (req, res) => {
   // Add a timestamp to the event
   event.timestamp = new Date().toISOString();
 
-  // Check if an event with the same event_id already exists, if not, initialize it
-  if (!eventStore.has(event.event_id)) {
-    eventStore.set(event.event_id, event);
-  } 
+  // Set the new event in eventStore
+  eventStore.set(event.timestamp, event);
 
   res.status(200).json({ message: 'Event received successfully' });
 });
-
 
 router.get('/metrics',(req, res) => {
   const opensByCountries = {};
@@ -29,8 +25,8 @@ router.get('/metrics',(req, res) => {
   
 
   eventStore.forEach((event) => {
+
     // Aggregation by country
-    // console.log(event);
     const country = event.geo_ip.country;
     if (!opensByCountries[country]) {
       opensByCountries[country] = 0;
@@ -85,7 +81,6 @@ router.get('/metrics',(req, res) => {
         opensByDevice['Other']++;
     }
 
-
     // Aggregation for time series
     const eventTimestamp = new Date(event.timestamp); // 10:32
     const timeSeriesEntry = timeSeries.find((entry) => {
@@ -139,14 +134,8 @@ router.get('/metrics',(req, res) => {
   // res.sse('message', metrics);
       
 });
-  // JSON.stringify(data, null, 2);
-  // const filePath = __dirname + '/pages/metrics.html';
 
-  // Send the metrics.html page
-  // res.sendFile(filePath);
-
-router.get('/metrics-page',(req,res)=>{
-  res.sendFile(__dirname + '/metrics.html');
-})
-
-module.exports = router;
+module.exports = {
+  router,
+  eventStore
+}

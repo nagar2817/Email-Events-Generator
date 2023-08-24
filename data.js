@@ -4,11 +4,41 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Function to get a random name from the array
+function getRandomData(data1) {
+  const randomIndex = Math.floor(Math.random() * data1.length);
+  return data1[randomIndex];
+}
+const cityNames = [
+  "New Jensen", "Ames", "West Alanna", "Lake Johathan", "Gutkowskiview",
+  "Kuhlmanfurt", "Lake Mablemouth", "Rodhaven", "Chapel Hill", "Lake Augustus",
+  "Oklahoma City", "Toledo", "Mooreborough", "Rowlett", "Leschport",
+  "State College", "Fort Freidaton", "Fort Ofeliaborough", "East Art", "South Arnoldoland",
+  "Charlottesville", "West Mabelle", "Greenholthaven", "Georgiannaland", "Fort Chanelle",
+  "Hazelworth", "North Joytown", "Estevanberg", "Maggiocester", "West Adela",
+  "Santinofield", "Bergstromside", "Fort Neldaborough", "South Emmie", "Andersonmouth",
+  "Port Rhett", "Jacobsboro", "Mesquite", "Orange", "Bernardoside", "Lake Gradystead",
+  "Ziemeberg", "Pflugerville", "North Alvacester"
+];
+const countryNames = [
+  "Oman", "Albania", "Kyrgyz Republic", "Cook Islands", "Bangladesh",
+  "Latvia", "Palestine", "South Georgia and the South Sandwich Islands", "Bhutan", "France",
+  "Ghana", "Uganda", "Curacao", "Vietnam", "Ireland",
+  "Portugal", "Sierra Leone", "Congo", "Kazakhstan", "Democratic People's Republic of Korea",
+  "Dominica", "Poland", "Norfolk Island", "Palau", "Northern Mariana Islands",
+  "Peru", "Japan", "Montenegro", "Slovenia", "Romania",
+  "New Zealand", "Austria", "Somalia", "Slovakia", "Guam",
+  "Saint Vincent and the Grenadines", "French Guiana", "Cote d'Ivoire", "Saint Kitts and Nevis", "Nauru",
+  "Tajikistan", "Mayotte", "Chad", "United Kingdom", "Mauritius",
+  "Kiribati", "China", "Norway", "Denmark", "Burundi",
+  "Antarctica"
+];
+
 function generateGeoIP() {
   return {
-    country: faker.location.country(),
+    country: getRandomData(countryNames),
     region: faker.location.state(),
-    city: faker.location.city(),
+    city: getRandomData(cityNames),
     latitude: faker.location.latitude(),
     longitude: faker.location.longitude(),
     zip: faker.location.zipCode(),
@@ -16,20 +46,17 @@ function generateGeoIP() {
   };
 }
 
+const deviceArray = ["Mobile", "Laptop", "Desktop", "Tablet","iPhone","Window Phone","BlackBerry","Android"];
+
 function generateUserAgentParsed() {
   const userAgentParsed = {
     agent_family: faker.lorem.word(),
     device_brand: faker.company.name(),
-    device_family: faker.lorem.word(),
+    device_family: getRandomData(deviceArray),
     is_mobile: faker.datatype.boolean(),
     is_proxy: faker.datatype.boolean(),
     is_prefetched: faker.datatype.boolean(),
   };
-
-  if (!userAgentParsed.is_mobile) {
-    userAgentParsed.os_family = faker.lorem.word();
-    userAgentParsed.os_version = faker.system.semver();
-  }
 
   return userAgentParsed;
 }
@@ -79,7 +106,7 @@ function generateEmailEvent() {
   };
 }
 
-const numEmailEvents = 10000;
+const numEmailEvents = 100;
 const emailEvents = []; 
 
 for (let i = 0; i < numEmailEvents; i++) {

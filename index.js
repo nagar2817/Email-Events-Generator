@@ -10,24 +10,8 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-const EventRouter = require('./routers.js');
-app.use(EventRouter);
-
-function callEndpointPeriodically() {
-  setInterval(() => {
-    // Use a library like axios to make a request to your own API endpoint
-    // Here's an example using axios
-    
-    axios.get('http://localhost:3000/metrics') // Replace with your actual endpoint URL
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, 60000); // 60,000 milliseconds = 1 minute
-} 
-
+const {router,eventStore} = require('./routers.js');
+app.use(router);
 
 // Function to select a random event from the emailEvents array
 function getRandomEvent() {
@@ -36,6 +20,7 @@ function getRandomEvent() {
 } 
 
 // Function to call the /events endpoint with a random event payload
+// handling 550+ request out of 600 , that's 92.56% success rate.
 function sendRandomEvent() {
   setInterval(()=>{
     const randomEvent = getRandomEvent();
@@ -45,23 +30,29 @@ function sendRandomEvent() {
         'Content-Type': 'application/json',
       },
     })
-      .then( //response => {
-      //   console.log('Event sent successfully:', response.data.length);
-      )
+      .then()
       .catch(error => {
         console.error('Error sending event:', error);
       });
-  },100)
+  },100) // sending 100 request per second to generate high throuput
 }
 
+function deleteInitialEntries() {
+  const entriesToDelete = Array.from(eventStore.keys()).slice(0, 100);
+  
+  for (const key of entriesToDelete) {
+    eventStore.delete(key);
+  }
+}
 
-app.use('/welcome',(req,res)=>{
-  res.json(emailEvents[32]);
-})
+setInterval(()=>{
+  if(eventStore.size > 500){
+    deleteInitialEntries();
+  }
+},60000); // 1 min
 
 app.listen(port, () => {
   console.log(`Real-time analytics API listening at http://localhost:${port}`);
-  callEndpointPeriodically();
   sendRandomEvent();
 });
 
