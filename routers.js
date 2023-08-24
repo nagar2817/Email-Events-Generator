@@ -135,6 +135,10 @@ router.get('/metrics',(req, res) => {
       
 });
 
+router.get('/',(req,res)=>{
+  res.sendFile(__dirname + "/pages/index.html");
+})
+
 module.exports = {
   router,
   eventStore
