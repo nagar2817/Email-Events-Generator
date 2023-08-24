@@ -25,8 +25,35 @@ function callEndpointPeriodically() {
       .catch(error => {
         console.error(error);
       });
-  }, 600); // 60,000 milliseconds = 1 minute
+  }, 60000); // 60,000 milliseconds = 1 minute
+} 
+
+
+// Function to select a random event from the emailEvents array
+function getRandomEvent() {
+  const randomIndex = Math.floor(Math.random() * emailEvents.length);
+  return emailEvents[randomIndex];
+} 
+
+// Function to call the /events endpoint with a random event payload
+function sendRandomEvent() {
+  setInterval(()=>{
+    const randomEvent = getRandomEvent();
+
+    axios.post('http://localhost:3000/events', randomEvent, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then( //response => {
+      //   console.log('Event sent successfully:', response.data.length);
+      )
+      .catch(error => {
+        console.error('Error sending event:', error);
+      });
+  },100)
 }
+
 
 app.use('/welcome',(req,res)=>{
   res.json(emailEvents[32]);
@@ -34,6 +61,7 @@ app.use('/welcome',(req,res)=>{
 
 app.listen(port, () => {
   console.log(`Real-time analytics API listening at http://localhost:${port}`);
-  // callEndpointPeriodically();
+  callEndpointPeriodically();
+  sendRandomEvent();
 });
 

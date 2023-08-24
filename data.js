@@ -79,8 +79,8 @@ function generateEmailEvent() {
   };
 }
 
-const numEmailEvents = 1000;
-const emailEvents = [];
+const numEmailEvents = 10000;
+const emailEvents = []; 
 
 for (let i = 0; i < numEmailEvents; i++) {
   emailEvents.push(generateEmailEvent());

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const eventStore = new Map();
 const emailEvents = require('./data.js');
+// const sseExpress = require("sse-express");
 
 // Endpoint to receive real-time analytics events
 router.post('/events', (req, res) => {
@@ -19,8 +20,7 @@ router.post('/events', (req, res) => {
 });
 
 
-router.get('/metrics', (req, res) => {
-
+router.get('/metrics',(req, res) => {
   const opensByCountries = {};
   const opensByCities = {};
   const opensByDevice = {};
@@ -36,6 +36,7 @@ router.get('/metrics', (req, res) => {
       opensByCountries[country] = 0;
     }
     opensByCountries[country]++;
+    
     const city = event.geo_ip.city;
     if (!opensByCities[city]) {
       opensByCities[city] = 0;
@@ -86,7 +87,7 @@ router.get('/metrics', (req, res) => {
 
 
     // Aggregation for time series
-    const eventTimestamp = new Date(event.timestamp);
+    const eventTimestamp = new Date(event.timestamp); // 10:32
     const timeSeriesEntry = timeSeries.find((entry) => {
       const entryTimestamp = new Date(entry.time);
       
@@ -135,6 +136,17 @@ router.get('/metrics', (req, res) => {
   };
 
   res.status(200).json(metrics);
+  // res.sse('message', metrics);
+      
 });
+  // JSON.stringify(data, null, 2);
+  // const filePath = __dirname + '/pages/metrics.html';
+
+  // Send the metrics.html page
+  // res.sendFile(filePath);
+
+router.get('/metrics-page',(req,res)=>{
+  res.sendFile(__dirname + '/metrics.html');
+})
 
 module.exports = router;
