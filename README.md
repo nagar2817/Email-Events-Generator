@@ -17,4 +17,6 @@ here are the few Optimization I adopted to maximize the handling incoming reques
 
 ## Screenshots
 
+![App Screenshot](https://github.com/nagar2817/Email-Events-Generator/blob/main/static/App.png)
+
 
